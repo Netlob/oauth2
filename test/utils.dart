@@ -18,7 +18,7 @@ class ExpectClient extends MockClient {
         super(fn);
 
   factory ExpectClient() {
-    late ExpectClient client;
+    ExpectClient client;
     client = ExpectClient._((request) => client._handleRequest(request));
     return client;
   }

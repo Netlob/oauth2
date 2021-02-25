@@ -14,8 +14,8 @@ import 'utils.dart';
 final redirectUrl = Uri.parse('http://example.com/redirect');
 
 void main() {
-  late ExpectClient client;
-  late oauth2.AuthorizationCodeGrant grant;
+  ExpectClient client;
+  oauth2.AuthorizationCodeGrant grant;
   setUp(() {
     client = ExpectClient();
     grant = oauth2.AuthorizationCodeGrant(
@@ -223,7 +223,7 @@ void main() {
       expect(grant.handleAuthorizationCode('auth code'), throwsStateError);
     });
 
-    test('sends an authorization code request', () async {
+    test('sends an authorization code request', () {
       grant.getAuthorizationUrl(redirectUrl);
       client.expectRequest((request) {
         expect(request.method, equals('POST'));
@@ -249,10 +249,11 @@ void main() {
             headers: {'content-type': 'application/json'}));
       });
 
-      expect(
-          await grant.handleAuthorizationCode('auth code'),
-          isA<oauth2.Client>().having((c) => c.credentials.accessToken,
-              'credentials.accessToken', 'access token'));
+      expect(grant.handleAuthorizationCode('auth code'),
+          completion(predicate((client) {
+        expect(client.credentials.accessToken, equals('access token'));
+        return true;
+      })));
     });
   });
 
@@ -301,8 +302,7 @@ void main() {
           completion(equals('access token')));
     });
 
-    test('.handleAuthorizationCode sends an authorization code request',
-        () async {
+    test('.handleAuthorizationCode sends an authorization code request', () {
       grant.getAuthorizationUrl(redirectUrl);
       client.expectRequest((request) {
         expect(request.method, equals('POST'));
@@ -328,10 +328,11 @@ void main() {
             headers: {'content-type': 'application/json'}));
       });
 
-      expect(
-          await grant.handleAuthorizationCode('auth code'),
-          isA<oauth2.Client>().having((c) => c.credentials.accessToken,
-              'credentials.accessToken', 'access token'));
+      expect(grant.handleAuthorizationCode('auth code'),
+          completion(predicate((client) {
+        expect(client.credentials.accessToken, equals('access token'));
+        return true;
+      })));
     });
   });
 
